@@ -35,7 +35,9 @@ function App() {
             dispatch(getAuthenticatedUser());
             navigate('/');
         } else {
-            navigate('/sign-in');
+            if (location.pathname !== '/sign-up') {
+                navigate('/sign-in');
+            }
         }
     }, [token]);
 
