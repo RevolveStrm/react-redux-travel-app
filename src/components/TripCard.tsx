@@ -1,9 +1,9 @@
 import React, {ReactElement} from 'react';
-import { ITrip } from "../storage/trips.ts";
 import {Link} from "react-router-dom";
+import {ITrip} from "../storage/trips/types.ts";
 
 interface TripCardProps {
-    trip: ITrip
+    trip: ITrip;
 }
 
 const TripCard: React.FC<TripCardProps> = ({ trip }): ReactElement => {

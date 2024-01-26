@@ -1,4 +1,14 @@
-import data from '../assets/data/trips.json';
+export interface InitialState {
+    list: ITrip[];
+    status: TripsStatus
+}
+
+export enum TripsStatus {
+    EMPTY = '',
+    SUCCESS = 'success',
+    LOADING = 'loading',
+    ERROR = 'error',
+}
 
 export interface ITrip {
     "id": string;
@@ -9,10 +19,4 @@ export interface ITrip {
     "price": number;
     "image": string;
     "createdAt": string;
-}
-
-export class TripsStorage {
-    public static getAll(): ITrip[] {
-        return data as ITrip[];
-    }
 }

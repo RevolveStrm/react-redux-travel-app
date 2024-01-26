@@ -10,6 +10,7 @@
   - loader
   - trip-info
   - trip-price
+  - notification
 - layout
   - header
   - profile-nav
@@ -268,6 +269,13 @@ select {
   color: var(--color-blue-200);
   font-size: var(--font-size-600);
   line-height: 1;
+}
+
+/* notification */
+
+.notification {
+  background: white;
+  color: black;
 }
 
 /* layout */

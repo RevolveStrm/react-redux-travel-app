@@ -1,10 +1,10 @@
 import React from 'react';
 import {getTomorrowDate} from "../../utils/getTomorrowDate.ts";
-import {ITrip} from "../../storage/trips.ts";
-import {BookingModalData} from "../../storage/bookings.ts";
+import {BookingModalData} from "../../storage/bookings/types.ts";
+import {ITrip} from "../../storage/trips/types.ts";
 
 interface BookTripModalProps {
-    trip: ITrip
+    trip: ITrip;
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (bookingData: BookingModalData) => void
@@ -30,9 +30,9 @@ const BookTripModal: React.FC<BookTripModalProps> = ({ trip, isOpen, onClose, on
         event.preventDefault();
         onClose();
         onSubmit({
-            totalPrice: totalValue,
-            guestsCount: currentGuests,
-            pickedDate: currentDate
+            tripId: trip.id,
+            guests: currentGuests,
+            date: new Date(currentDate).toISOString()
         })
     }
 

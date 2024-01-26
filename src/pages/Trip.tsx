@@ -1,10 +1,11 @@
 import { useParams } from "react-router-dom";
-import {ITrip, TripsStorage} from "../storage/trips.ts";
 import TripInfo from "../components/TripInfo.tsx";
+import {ITrip} from "../storage/trips/types.ts";
+import {useSelector} from "react-redux";
 
 const Trip = () => {
     const params = useParams();
-    const trips: ITrip[] = TripsStorage.getAll();
+    const trips: ITrip[] = useSelector((state: any) => state.trips.list)
     const trip: ITrip | undefined = trips.find(el => el.id === params.tripId);
 
     return (

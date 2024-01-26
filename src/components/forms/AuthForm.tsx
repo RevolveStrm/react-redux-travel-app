@@ -1,21 +1,40 @@
 import React, {useState} from 'react';
-import { useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/validateEmail.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {signIn, signUp} from "../../storage/auth/asyncActions.ts";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {RootState} from "../../storage/store.ts";
 
 export interface AuthFormProps {
     isSignUp: boolean;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ isSignUp }) => {
-    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { error } = useSelector((state: RootState) => state.auth);
 
     const title = isSignUp ? "Sign Up" : "Sign In";
     const linkText = isSignUp ? "Sign In" : "Sign Up";
     const linkHref = isSignUp ? "/sign-in" : "/sign-up";
     const linkTestId = isSignUp ? "auth-sign-in-link" : "auth-sign-up-link";
 
+    const [currentFullName, setCurrentFullName] = useState('');
     const [currentEmail, setCurrentEmail] = useState('');
     const [currentPassword, setCurrentPassword] = useState('');
+
+    React.useEffect(() => {
+        toast.error(error, {
+            className: 'notification',
+            hideProgressBar: true,
+            autoClose: 2000,
+        });
+    }, [error]);
+
+    const handleFullNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setCurrentFullName(value);
+    }
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -30,8 +49,44 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp }) => {
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
 
-        if (currentPassword.length >= 3 && validateEmail(currentEmail)) {
-            navigate('/');
+        if (!currentPassword || currentPassword.length < 3) {
+            toast.error('Password must be at least 3 characters', {
+                className: 'notification',
+                hideProgressBar: true,
+                autoClose: 2000,
+            });
+            return;
+        }
+        if (!currentEmail || !validateEmail(currentEmail)) {
+            toast.error('Please enter a valid email address', {
+                className: 'notification',
+                hideProgressBar: true,
+                autoClose: 2000,
+            });
+            return;
+        }
+        if (isSignUp && !currentFullName) {
+            toast.error('Full name is required', {
+                className: 'notification',
+                hideProgressBar: true,
+                autoClose: 2000,
+            });
+            return;
+        }
+
+        if (isSignUp) {
+            // @ts-ignore
+            dispatch(signUp({
+                fullName: currentFullName,
+                email: currentEmail,
+                password: currentPassword
+            }));
+        } else {
+            // @ts-ignore
+            dispatch(signIn({
+                email: currentEmail,
+                password: currentPassword
+            }));
         }
     };
 
@@ -46,6 +101,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp }) => {
                             data-test-id="auth-full-name"
                             name="full-name"
                             type="text"
+                            onChange={handleFullNameChange}
                             required
                         />
                     </label>

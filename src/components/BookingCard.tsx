@@ -1,5 +1,5 @@
 import React from 'react';
-import { IBooking } from "../storage/bookings.ts";
+import {IBooking} from "../storage/bookings/types.ts";
 
 interface BookingCardProps {
     booking: IBooking;
@@ -14,7 +14,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, handleCancel }) => {
             {booking.guests} {booking.guests > 1 ? 'guests' : 'guest'}
           </span>
             <span data-test-id="booking-date" className="booking__date">
-            {booking.date}
+            {new Date(booking.date).toLocaleDateString()}
           </span>
             <span data-test-id="booking-total" className="booking__total">
             {booking.totalPrice} $

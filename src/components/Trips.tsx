@@ -1,6 +1,6 @@
 import React from 'react';
-import {ITrip} from "../storage/trips.ts";
 import TripCard from "./TripCard.tsx";
+import {ITrip} from "../storage/trips/types.ts";
 
 interface TripsProps {
     trips: ITrip[];

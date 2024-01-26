@@ -1,14 +1,38 @@
 import React, { useState } from "react";
-import { ITrip } from "../storage/trips.ts";
 import BookTripModal from "./modals/BookTripModal.tsx";
-import { BookingModalData, BookingStorage } from "../storage/bookings.ts";
+import {BookingModalData, BookingStatus} from "../storage/bookings/types.ts";
+import {ITrip} from "../storage/trips/types.ts";
+import {RootState, useAppDispatch} from "../storage/store.ts";
+import {useSelector} from "react-redux";
+import {bookTrip} from "../storage/bookings/asyncActions.ts";
+import {toast} from "react-toastify";
+import {resetBookTripStatus} from "../storage/bookings/slice.ts";
 
 interface TripInfoProps {
     trip: ITrip;
 }
 
 const TripInfo: React.FC<TripInfoProps> = ({ trip }) => {
+    const dispatch = useAppDispatch();
+    const { bookTripStatus, bookTripError } = useSelector((state: RootState) => state.bookings);
     const [modalVisibility, setModalVisibility] = useState(false);
+
+    React.useEffect(() => {
+        if (bookTripStatus === BookingStatus.SUCCESS) {
+            toast.success(`Trip has been booked!`, {
+                className: 'notification',
+                hideProgressBar: true,
+                autoClose: 2000,
+            });
+            dispatch(resetBookTripStatus(''));
+        } else if (bookTripStatus === BookingStatus.ERROR) {
+            toast.error(bookTripError, {
+                className: 'notification',
+                hideProgressBar: true,
+                autoClose: 2000,
+            });
+        }
+    }, [bookTripStatus]);
 
     const handleModalOpen = () => {
         setModalVisibility(true);
@@ -19,7 +43,7 @@ const TripInfo: React.FC<TripInfoProps> = ({ trip }) => {
     };
 
     const handleModalSubmit = (bookingData: BookingModalData) => {
-        BookingStorage.createNewBooking(trip, bookingData);
+        dispatch(bookTrip(bookingData));
     };
 
     return (
